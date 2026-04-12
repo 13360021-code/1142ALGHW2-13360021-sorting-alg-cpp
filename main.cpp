@@ -25,7 +25,15 @@ void printTitle(const string& title) {
 // ==============================
 void selectionSort(vector<int>& arr) {
     int n = arr.size();
-
+    //sort(arr.begin(),arr.end());
+    for(int i=0;i<n-1;i++){
+       int minIndex = i;
+       for(int j=i+1;j<n;j++){
+         //if(arr[j]<arr[minIndex])swap(arr[j],arr[minIndex]);
+         if(arr[j]<arr[minIndex])minIndex=j;
+       }
+       swap(arr[i],arr[minIndex]);
+    }
     // TODO:
     // 使用挑選排序法將 arr 由小到大排序
     //
@@ -40,7 +48,15 @@ void selectionSort(vector<int>& arr) {
 // ==============================
 void insertionSort(vector<int>& arr) {
     int n = arr.size();
-
+    for(int i=1;i<n;i++){
+        int key = arr[i];
+        int j = i;
+        while((j>0)&&(arr[j-1]>key)){
+            arr[j] = arr[j-1];
+            j--;
+        } //arr[j]會一直和前面j-1個比較,只要
+        arr[j]=key;
+    }
     // TODO:
     // 使用插入排序法將 arr 由小到大排序
     //
