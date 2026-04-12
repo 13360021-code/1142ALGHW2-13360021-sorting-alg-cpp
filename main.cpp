@@ -52,9 +52,9 @@ void insertionSort(vector<int>& arr) {
         int key = arr[i];
         int j = i;
         while((j>0)&&(arr[j-1]>key)){
-            arr[j] = arr[j-1];
+            arr[j] = arr[j-1];// 如果前面的數字比 key 大，就把前面的數字往後移一格
             j--;
-        } //arr[j]會一直和前面j-1個比較,只要
+        } //arr[j]會一直和前面j-1個比較,只要key<a[j-1]就繼續排序,否則就退出來
         arr[j]=key;
     }
     // TODO:
@@ -72,7 +72,16 @@ void insertionSort(vector<int>& arr) {
 // ==============================
 void bubbleSort(vector<int>& arr) {
     int n = arr.size();
-
+    for(int i=0;i<n-1;i++){
+        bool swapped=false;//每一輪開始前，先假設已經排好了,沒交換
+        for(int j=0;j<n-1-i;j++){   // 為什麼是 n-i-1？因為每一輪結束後，最後面 i 個數字已經是最大的，不用再比了
+            if(arr[j]>arr[j+1]){
+               swap(arr[j],arr[j+1]);
+               swapped=true;  //有發生交換，代表還沒完全排好
+            }
+        }
+        if(!swapped)break;  //整輪完全沒交換就提前離開
+    }
     // TODO:
     // 使用氣泡排序法將 arr 由小到大排序
     //
