@@ -95,7 +95,16 @@ void bubbleSort(vector<int>& arr) {
 // ==============================
 void shellSort(vector<int>& arr) {
     int n = arr.size();
-
+    for(int gap=n/2;gap>0;gap/=2){  // 1. 間隔控制
+        for(int i=gap;i<n;i++){     // 2. 點名：從 gap 開始往後掃描
+            int temp = arr[i];      // 先把當前要插入的人拿起來
+            int j;                  // 3. 跳躍比較：j >= gap 確保 j-gap 不會變負數
+            for(j=i;j>=gap && arr[j-gap]>temp;j-=gap){
+                arr[j] = arr[j-gap];   // 前面的比較大，就往後挪
+            }
+            arr[j] = temp;
+        }
+    }
     // TODO:
     // 使用 Shell 排序法將 arr 由小到大排序
     //
