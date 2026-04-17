@@ -143,7 +143,7 @@ void merge(vector<int>& arr, int left, int mid, int right) {
 }
 
 void mergeSort(vector<int>& arr, int left, int right) {
-    if(left>=right)return ;
+    if(left<right){  //回到上一個呼叫我的地方 ex 現在是merge(A,0,0) return了 ;回到merge(A,0,1)
     int mid=left+(right-left)/2; //和(left+right)/2是一樣的 但用前者可以預防超過int上限(21億),以防溢位產生
     mergeSort(arr,left,mid);
     mergeSort(arr,mid+1,right);
@@ -158,12 +158,22 @@ void mergeSort(vector<int>& arr, int left, int right) {
     // 3. 遞迴排序左半部
     // 4. 遞迴排序右半部
     // 5. 呼叫 merge()
+    }
 }
 
 // ==============================
 // 6. Quick Sort
 // ==============================
 int partitionArray(vector<int>& arr, int low, int high) {
+    int pivot = arr[high];
+    int i=low-1;
+    for(int j=low;j<=high-1;j++){
+        if(arr[j] < pivot){
+            i++; //ex i=low-1, i++ ==> i=low;
+            swap(arr[i],arr[j]); 
+        }
+    }
+    swap(arr[i+1],arr[high]);// 此時 i+1 就是 pivot 的正確排序位置
     // TODO:
     // 以 arr[high] 作為 pivot，完成 partition
     //
@@ -173,11 +183,16 @@ int partitionArray(vector<int>& arr, int low, int high) {
     // 3. 掃描 j = low 到 high - 1
     // 4. 若 arr[j] < pivot，則交換到左側
     // 5. 最後將 pivot 放到正確位置
-    // 6. 回傳 pivot 的索引
-    return -1; // 請修改
+    return i+1;  // 6. 回傳 pivot 的索引
 }
 
 void quickSort(vector<int>& arr, int low, int high) {
+    if(low<high){
+       int part = partitionArray(arr,low,high);
+       quickSort(arr,low,part-1); //左半部  //如果low < part-1 還成立,就繼續quickSort
+       quickSort(arr,part+1,high); //右半部 //如果 part+1 < high 還成立,就繼續quickSort
+           
+    }
     // TODO:
     // 使用遞迴完成 quick sort
     //
