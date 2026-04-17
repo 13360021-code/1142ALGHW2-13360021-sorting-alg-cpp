@@ -118,6 +118,21 @@ void shellSort(vector<int>& arr) {
 // 5. Merge Sort
 // ==============================
 void merge(vector<int>& arr, int left, int mid, int right) {
+    vector<int>leftArr,rightArr;
+    for(int i=left;i<=mid;i++){leftArr.push_back(arr[i]);}
+    for(int j=mid+1;j<=right;j++){rightArr.push_back(arr[j]);}
+    int n=0,m=0,q=left;
+    while(n<leftArr.size() && m<rightArr.size()){
+       if(leftArr[n]<=rightArr[m]){
+          arr[q++]=leftArr[n++];
+       }
+       else {
+          arr[q++]=rightArr[m++];
+       }
+    }
+    while(n<leftArr.size()){arr[q++]=leftArr[n++];}
+    while(m<rightArr.size()){arr[q++]=rightArr[m++];}
+    
     // TODO:
     // 合併 arr[left..mid] 與 arr[mid+1..right]
     //
@@ -128,6 +143,12 @@ void merge(vector<int>& arr, int left, int mid, int right) {
 }
 
 void mergeSort(vector<int>& arr, int left, int right) {
+    if(left>=right)return ;
+    int mid=left+(right-left)/2; //和(left+right)/2是一樣的 但用前者可以預防超過int上限(21億),以防溢位產生
+    mergeSort(arr,left,mid);
+    mergeSort(arr,mid+1,right);
+    
+    merge(arr,left,mid,right);
     // TODO:
     // 使用遞迴完成 merge sort
     //
