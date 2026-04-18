@@ -207,6 +207,35 @@ void quickSort(vector<int>& arr, int low, int high) {
 // 僅處理非負整數
 // ==============================
 void countingSortByDigit(vector<int>& arr, int exp) {
+    int n = arr.size();
+    vector<int> output(n); // 暫存排序結果
+    int count[10] = {0};   // 0-9 的計數器
+
+    // 1. 統計每個 digit 出現的次數
+    // 例如 exp=1 時看個位，exp=10 時看十位
+    for (int i = 0; i < n; i++) {
+        int digit = (arr[i] / exp) % 10;
+        count[digit]++;
+    }
+
+    // 2. 轉成累計次數（這步是為了知道每個數字在 output 中的位置）
+    // 累加後，count[i] 會告訴我們該數字應該放到的「最後一個位置」
+    for (int i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // 3. 從右往左放入 output，這是為了保持「穩定性 (Stability)」
+    // 也就是原本在後面的相同數字，排完後依然在後面
+    for (int i = n - 1; i >= 0; i--) {
+        int digit = (arr[i] / exp) % 10;
+        output[count[digit] - 1] = arr[i];
+        count[digit]--; // 放完一個，該格子的位置往前挪一格
+    }
+
+    // 4. 將結果複製回原始陣列
+    for (int i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
     // TODO:
     // 依照指定位數 exp 進行 counting sort
     //
@@ -219,6 +248,15 @@ void countingSortByDigit(vector<int>& arr, int exp) {
 }
 
 void radixSort(vector<int>& arr) {
+    if (arr.empty()) return;
+
+    // 1. 找出最大值，決定要跑幾輪（個位、十位、百位...）
+    int maxVal = *max_element(arr.begin(), arr.end());
+
+    // 2. 從個位數開始 (exp = 1, 10, 100...)
+    for (int exp = 1; maxVal / exp > 0; exp *= 10) {
+        countingSortByDigit(arr, exp);
+    }
     // TODO:
     // 使用 radix sort 將 arr 由小到大排序
     //
@@ -233,6 +271,19 @@ void radixSort(vector<int>& arr) {
 // 8. Heap Sort
 // ==============================
 void heapify(vector<int>& arr, int n, int i) {
+    int largest = i;   // 假設父節點是最大的
+    int left  = 2*i + 1;  // 左子節點索引
+    int right = 2*i + 2;  // 右子節點索引
+    if(left < n && arr[left] > arr[largest]){  // 1. 如果左邊小孩比較大，更新最大者索引
+        largest = left;
+    }
+    if(right < n && arr[right] > arr[largest]){ //2. 如果右邊小孩又比目前的更大，更新最大者索引
+        largest = right;
+    }
+    if(largest != i){   // 3. 如果最大者不是原本的父節點 i，就要交換位置
+        swap(arr[i],arr[largest]);  
+        heapify(arr,n,largest);  // 4. 因為換了位置，下面可能會亂掉，所以要繼續往下調整（遞迴）
+    }
     // TODO:
     // 維護以 i 為根的 max-heap
     //
@@ -245,7 +296,18 @@ void heapify(vector<int>& arr, int n, int i) {
 
 void heapSort(vector<int>& arr) {
     int n = arr.size();
+    // A. 建立 Max Heap (從最後一個有小孩的節點開始往回做)
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+    // B. 一個一個取出最大值
+    for (int i = n - 1; i > 0; i--) {
+        // 1. 把目前最大的（在 arr[0]）換到最後面（arr[i]）
+        swap(arr[0], arr[i]);
 
+        // 2. 縮小範圍，對剩餘的樹進行 heapify，確保下次 arr[0] 又是最大的
+        heapify(arr, i, 0);
+    }
     // TODO:
     // 使用 heap sort 將 arr 由小到大排序
     //
